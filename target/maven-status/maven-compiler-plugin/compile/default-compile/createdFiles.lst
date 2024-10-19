@@ -1,0 +1,11 @@
+com\e_library\Main.class
+com\e_library\MainController.class
+com\e_library\models\instances\User.class
+com\e_library\models\instances\Book.class
+com\e_library\models\Books.class
+com\e_library\models\Example$1.class
+com\e_library\models\Example.class
+com\e_library\models\Objekts.class
+com\e_library\App.class
+com\e_library\models\instances\BookInstance.class
+com\e_library\models\Users.class
