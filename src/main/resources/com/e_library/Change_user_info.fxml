@@ -3,15 +3,15 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.e_library.ChangeInfoController">
    <children>
-      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="277.0" layoutY="52.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="user_icon" fitHeight="45.0" fitWidth="45.0" layoutX="277.0" layoutY="52.0" pickOnBounds="true" preserveRatio="true" />
       <Label layoutX="186.0" layoutY="142.0" text="Ім'я" AnchorPane.rightAnchor="390.0">
          <font>
             <Font size="14.0" />
@@ -37,11 +37,11 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <TextField layoutX="258.0" layoutY="139.0" />
-      <TextField layoutX="259.0" layoutY="178.0" />
-      <TextField layoutX="259.0" layoutY="260.0" />
-      <TextField layoutX="260.0" layoutY="300.0" />
-      <DatePicker layoutX="258.0" layoutY="218.0" />
-      <Button layoutX="267.0" layoutY="351.0" mnemonicParsing="false" text="Зберегти" />
+      <TextField fx:id="user_name" layoutX="258.0" layoutY="139.0" />
+      <TextField fx:id="user_surname" layoutX="259.0" layoutY="178.0" />
+      <DatePicker fx:id="user_datebirth" layoutX="258.0" layoutY="218.0" />
+      <Button layoutX="267.0" layoutY="351.0" mnemonicParsing="false" onAction="#save_changes" text="Зберегти" />
+      <PasswordField fx:id="user_current_password" layoutX="258.0" layoutY="261.0" />
+      <PasswordField fx:id="user_new_password" layoutX="258.0" layoutY="301.0" />
    </children>
 </AnchorPane>

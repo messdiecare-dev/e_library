@@ -7,14 +7,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="429.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.e_library.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="429.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.e_library.BooksController">
    <children>
-      <TableView fx:id="books_table" layoutX="23.0" layoutY="65.0" prefHeight="307.0" prefWidth="554.0">
+      <TableView fx:id="books_table" layoutX="11.0" layoutY="65.0" prefHeight="307.0" prefWidth="578.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="Назва" />
-          <TableColumn prefWidth="75.0" text="Автор" />
-            <TableColumn prefWidth="75.0" text="Жанр" />
-            <TableColumn prefWidth="75.0" text="Дата додавання" />
+          <TableColumn fx:id="book_name_col" prefWidth="75.0" text="Назва" />
+          <TableColumn fx:id="book_author_col" prefWidth="75.0" text="Автор" />
+            <TableColumn fx:id="book_genre_col" prefWidth="75.0" text="Жанр" />
+            <TableColumn fx:id="book_date_col" prefWidth="75.0" text="Дата додавання" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

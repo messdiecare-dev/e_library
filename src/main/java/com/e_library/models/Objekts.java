@@ -21,8 +21,6 @@ abstract class Objekts<T> {
     public List<T> getObjekts(String src) {
         Gson gson = new Gson();
         String json = fromFileToString(src);
-        System.out.println("Json: ");
-        System.out.println(json);
         if (json.equals("")) {
             return new ArrayList<>();
         }
@@ -32,14 +30,25 @@ abstract class Objekts<T> {
         return users;
     }
 
-    public void createNewObjekt(T object, String src) {
+    public void createNewObjekt(T objekt, String src) {
         Gson gson = new Gson();
-        List<T> objects = getObjekts(src);
+        List<T> objekts = getObjekts(src);
         try (FileWriter fw = new FileWriter(src)) {
-            objects.add(object);
-            System.out.println("Objekts:");
-            System.out.println(objects.toString());
-            fw.write(gson.toJson(objects));
+            objekts.add(objekt);
+            fw.write(gson.toJson(objekts));
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeObjekt(T objekt, String src) {
+        Gson gson = new Gson();
+        List<T> objekts = getObjekts(src);
+        objekts.remove(objekt);
+        
+        try (FileWriter fw = new FileWriter(src)) {
+            fw.write(gson.toJson(objekts));
             fw.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,14 +56,13 @@ abstract class Objekts<T> {
     }
 
     protected static String fromFileToString(String src) {
-        String str = "";
         try {
             Path fileName = Path.of(src);
-            str = Files.readString(fileName);
+            return Files.readString(fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return str;
+        return null;
     }
 }
