@@ -17,6 +17,6 @@
             <Font size="13.0" />
          </font>
       </Label>
-      <Button fx:id="book_create_success_button" layoutX="184.0" layoutY="139.0" mnemonicParsing="false" onAction="#book_create_success_close" text="OK" />
+      <Button fx:id="book_changed_success_button" layoutX="184.0" layoutY="139.0" mnemonicParsing="false" onAction="#book_changed_success_close" text="OK" />
    </children>
 </AnchorPane>

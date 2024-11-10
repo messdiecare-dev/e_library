@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.e_library.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.e_library.ChangeInfoController">
    <children>
       <Label layoutX="174.0" layoutY="66.0" text="Вітаю!">
          <font>
@@ -17,6 +17,6 @@
             <Font size="13.0" />
          </font>
       </Label>
-      <Button fx:id="login_success_button" layoutX="184.0" layoutY="139.0" mnemonicParsing="false" onAction="#login_success_close" text="OK" />
+      <Button fx:id="change_info_success_button" layoutX="184.0" layoutY="139.0" mnemonicParsing="false" onAction="#change_info_success_close" text="OK" />
    </children>
 </AnchorPane>

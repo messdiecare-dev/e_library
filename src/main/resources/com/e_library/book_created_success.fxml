@@ -12,7 +12,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="118.0" layoutY="100.0" text="Ви успішно створили книгу">
+      <Label layoutX="117.0" layoutY="100.0" text="Ви успішно створили книгу">
          <font>
             <Font size="13.0" />
          </font>

@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import com.e_library.models.Users;
@@ -14,7 +15,7 @@ public class User {
     private Date birth;
     private String password;
     private String login;
-    private Boolean root = true;
+    private Boolean root = false;
     private String id;
     private String user_icon = "src\\main\\resources\\com\\e_library\\user.png";
 
@@ -62,6 +63,15 @@ public class User {
         this.password = newPassword;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    } 
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    } 
+
+
     public String getIcon() {
         return this.user_icon;
     }
@@ -95,5 +105,18 @@ public class User {
                 return number;
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id.equals(user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, login);
     }
 }

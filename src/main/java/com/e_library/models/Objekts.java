@@ -1,10 +1,15 @@
 package com.e_library.models;
 
-import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +38,15 @@ abstract class Objekts<T> {
     public void createNewObjekt(T objekt, String src) {
         Gson gson = new Gson();
         List<T> objekts = getObjekts(src);
-        try (FileWriter fw = new FileWriter(src)) {
-            objekts.add(objekt);
-            fw.write(gson.toJson(objekts));
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        URL fileUrl = Objekts.class.getResource(src);
+
+        if(fileUrl != null) {
+            try(OutputStream outputStream = new FileOutputStream(Paths.get(fileUrl.toURI()).toFile())) {
+                objekts.add(objekt);
+                outputStream.write(gson.toJson(objekts).getBytes());
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -47,18 +55,29 @@ abstract class Objekts<T> {
         List<T> objekts = getObjekts(src);
         objekts.remove(objekt);
         
-        try (FileWriter fw = new FileWriter(src)) {
-            fw.write(gson.toJson(objekts));
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        URL fileUrl = Objekts.class.getResource(src);
+        if(fileUrl != null) {
+            System.out.println("fileUrl is not null");
+            try(OutputStream outputStream = new FileOutputStream(Paths.get(fileUrl.toURI()).toFile())) {
+                outputStream.write(gson.toJson(objekts).getBytes());
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     protected static String fromFileToString(String src) {
-        try {
-            Path fileName = Path.of(src);
-            return Files.readString(fileName);
+        try(InputStream inputStream = Objekts.class.getResourceAsStream(src)) {
+            InputStreamReader isr = new InputStreamReader(inputStream);
+            BufferedReader reader = new BufferedReader(isr);
+
+            StringBuilder content = new StringBuilder();
+            String line;
+            while((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+
+            return content.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }

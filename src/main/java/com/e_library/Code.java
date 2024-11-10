@@ -15,8 +15,8 @@ public class Code {
         Books books = new Books();
         Book book = books.getObjekts(src_books).get(0);
         instances = book.getInstancesList();
-        instances.add(new BookInstance("12345", "available"));
-        instances.add(new BookInstance("1234sdfsdf5", "avaidflable"));
+        instances.add(new BookInstance("12345", "available", ""));
+        instances.add(new BookInstance("1234sdfsdf5", "avaidflable", ""));
         System.out.println(newNumber());
     }
 

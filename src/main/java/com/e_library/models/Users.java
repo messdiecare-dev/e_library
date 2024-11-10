@@ -2,12 +2,18 @@ package com.e_library.models;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.e_library.models.instances.User;
 
 public class Users extends Objekts<User>{
-    private static String src_user = "src\\main\\resources\\com\\e_library\\Users.json";
+    // private static String src_user = "src\\main\\resources\\com\\e_library\\Users.json";
+    private static String src_user = "/com/e_library/Users.json";
     private static User current_user;
     private static String current_user_id;
     private static Boolean root;
@@ -22,6 +28,30 @@ public class Users extends Objekts<User>{
 
     public User getCurrentUser() {
         return current_user;
+    }
+
+    public boolean is_valid_info(String name, String surname, String login, String password, LocalDate date) {
+        if(date == null) return false;
+        System.out.println();
+        System.out.println("Date is valid");
+        
+        if(name.isBlank() || surname.isBlank() || login.isBlank() || password.isBlank()) return false;
+        System.out.println("name, surname, login,m password are not blank");
+        
+        String regex = "[\\p{IsCyrillic}&#+*^%@`~/.<>/|\\\\-]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        
+        if(matcher.find()) return false;
+        System.out.println("password is valid");
+        
+        List<User> users = getObjekts(src_user);
+        for(User user: users) {
+            if(user.getLogin().equals(login)) return false;
+        }
+        System.out.println("login is not used");
+
+        return true;
     }
 
     public static void setCurrentUser(User user) {
@@ -59,7 +89,7 @@ public class Users extends Objekts<User>{
         return root;
     }
 
-    private User getUserById(String id) {
+    public User getUserById(String id) {
         List<User> users = getUsers();
         for (User user: users) {
             if(user.getId().equals(id)) {
@@ -68,6 +98,17 @@ public class Users extends Objekts<User>{
         }
 
         return null;
+    }
+
+    public void addUser(String name, String surname, String login, LocalDate date, String password) {
+        User user = new User(
+                name,
+                surname,
+                login,
+                Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                getMD5(password)
+        );
+        createNewObjekt(user, src_user);
     }
 
     public void saveUser(User user) {

@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.e_library.models.Books;
 import com.e_library.models.Users;
@@ -18,6 +20,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -25,6 +30,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class BooksController extends MainController {
     protected Book selectedBook;
@@ -41,9 +47,15 @@ public class BooksController extends MainController {
     @FXML
     private ImageView books_user_img;
 
+    @FXML
+    private Button book_new_book_button;
+
     
-    private void start_book_window(String window, Book book) {
+    private boolean start_book_window(String window, Book book) {
         try {
+            String title = "Книга";
+            if(is_opened("Book")) return false;
+
             if(book == null) {
                 book = new Book(" ", " ", " ", null, null, " ");
             }
@@ -53,15 +65,22 @@ public class BooksController extends MainController {
             BookController controller = loader.getController();
             
             Stage newStage = new Stage();
+            Stage current_stage = (Stage) books_table.getScene().getWindow();
             newStage.setScene(new Scene(root));
-            controller.setData(book, newStage);
+            newStage.setTitle(title);
+            controller.setData(book, newStage, current_stage);
+            windows.add("Book");
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return true;
     }
 
-    private void start_change_user_info_window() {
+    private boolean start_change_user_info_window() {
+        String title = "Інформація про користувача";
+        if(is_opened("Change_user_info")) return false;
         Users users = new Users();
         User user = users.getCurrentUser();
         try {
@@ -72,17 +91,25 @@ public class BooksController extends MainController {
             
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            newStage.setTitle(title);
             controller.setData(user, newStage);
+            windows.add("Change_user_info");
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return true;
     }
 
     @FXML
     public void initialize() {
         ObservableList<Book> books_raw = new Books().get_books_list();
         FilteredList<Book> books = new FilteredList<>(books_raw, p -> true);
+
+        if(!Users.root()) {
+            book_new_book_button.setVisible(false);
+        }
 
         books_search_field.textProperty().addListener((observable, oldValue, newValue) -> {
             books.setPredicate(book -> {
@@ -103,7 +130,28 @@ public class BooksController extends MainController {
             ex.printStackTrace();
         }
 
-        books_user_img.setOnMouseClicked(e -> start_change_user_info_window());
+        // books_user_img.setOnMouseClicked(e -> start_change_user_info_window()); //TODO
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem item1 = new MenuItem("Змінити");
+        item1.setOnAction((e) -> {
+            start_change_user_info_window();
+        });
+        MenuItem item2 = new MenuItem("Вийти");
+        item2.setOnAction((e) -> {
+            try {
+                close_all_windows();
+                Users.logout();
+                Thread.sleep(100); // Задержка для закрытия окон
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            start_window("Login", "Вхід");
+        });
+        contextMenu.getItems().addAll(item1, item2);
+
+        books_user_img.setOnMouseClicked(e -> {
+            contextMenu.show(books_user_img, e.getScreenX(), e.getScreenY());
+        });
         books_user_img.setOnMouseEntered((e) -> {
             books_user_img.setCursor(Cursor.HAND);
         });
@@ -125,5 +173,19 @@ public class BooksController extends MainController {
                 start_book_window("Book", selectedBook);
             }
         });
+    }
+
+    private void close_all_windows() {
+        List<Window> winds = new ArrayList<>(Window.getWindows());
+        windows.clear();
+        
+        for(Window window: winds) {
+            if(window instanceof Stage) {
+                Stage stage = (Stage) window;
+                if(stage.isShowing()) stage.close();
+            }
+        }
+
+        System.out.println();
     }
 }

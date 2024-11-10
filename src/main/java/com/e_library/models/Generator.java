@@ -5,8 +5,7 @@ import com.e_library.models.instances.Book;
 import com.github.javafaker.Faker;
 
 public class Generator {
-    public static String src_user = "src\\main\\resources\\com\\e_library\\Users.json";
-    public static String src_books = "src\\main\\resources\\com\\e_library\\Books.json";
+    public static String src_books = "/com/e_library/Books.json";
 
     public static void main(String[] args) {
         Books bks = new Books();

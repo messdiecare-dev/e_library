@@ -10,8 +10,10 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import com.e_library.models.Books;
+import com.e_library.models.Users;
 import com.e_library.models.instances.Book;
 import com.e_library.models.instances.BookInstance;
+import com.e_library.models.instances.User;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,9 +37,11 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class BookController extends MainController {
-    private static String books_src = "src\\main\\resources\\com\\e_library\\Books.json";
     private static Book current_book;
+    public static Stage current_book_stage;
     private static boolean change_image = false;
+    private static boolean book_instances_change = false;
+    private static Stage window_books;
     public static ObservableList<BookInstance> instances;
 
     @FXML
@@ -50,7 +54,7 @@ public class BookController extends MainController {
     private DatePicker book_dateAdding, book_dateCreated;
 
     @FXML
-    private Button book_create_button, book_save_button;
+    private Button book_create_button, book_save_button, book_delete_button, book_delete_success_button, new_instance_button, book_editable_change, reserved_success_button, reserved_fail_button;
 
     @FXML
     private ImageView book_image;
@@ -72,6 +76,9 @@ public class BookController extends MainController {
         book_annotation.setEditable(!book_annotation.isEditable());
         book_create_button.setDisable(!book_create_button.isDisabled());
         book_save_button.setDisable(!book_save_button.isDisabled());
+        book_delete_button.setDisable(!book_delete_button.isDisabled());
+        new_instance_button.setDisable(!new_instance_button.isDisabled());
+        book_instances_change = !book_instances_change;
         change_image = !change_image;
     }
 
@@ -83,10 +90,14 @@ public class BookController extends MainController {
                 book_genre.getText(),
                 Date.from(book_dateAdding.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()),
                 Date.from(book_dateCreated.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()),
-                book_annotation.getText());
+                book_annotation.getText()
+        );
 
-        bks.createNewObjekt(book, books_src);
-        start_window("book_created_success");
+        bks.add_book_to_list(book);
+
+        TableView<Book> table = (TableView<Book>) window_books.getScene().lookup("#books_table");
+        table.refresh();
+        start_window("book_created_success", "Успішно додали книгу");
     }
 
     public void save_book() {
@@ -100,13 +111,18 @@ public class BookController extends MainController {
         current_book.setAnnotation(book_annotation.getText());
         // current_book.setInstances(book_instances.getItems());
         books.add_book_to_list(current_book);
+        TableView<Book> table = (TableView<Book>) window_books.getScene().lookup("#books_table");
+        table.refresh();
 
-        start_window("book_changed_success");
+        start_window("book_changed_success", "Успішно змінили книгу");
         System.out.println("Book saved succesfully!");
     }
 
-    public void setData(Book book, Stage stage) {
+    public void setData(Book book, Stage stage, Stage books_window) {
         current_book = book;
+        current_book_stage = stage;
+        window_books = books_window;
+        boolean root = Users.root();
         instances = FXCollections.observableArrayList(current_book.getInstancesList());
         book_name.setText(book.getName());
         book_author.setText(book.getAuthor());
@@ -114,6 +130,15 @@ public class BookController extends MainController {
         book_dateAdding.setValue(LocalDate.parse(book.getDateAdded()));
         book_dateCreated.setValue(LocalDate.parse(book.getDateCreated()));
         book_annotation.setText(book.getAnnotation());
+
+        if(!root) {
+            book_create_button.setVisible(false);
+            book_save_button.setVisible(false);
+            book_delete_button.setVisible(false);
+            new_instance_button.setVisible(false);
+            book_editable_change.setVisible(false);
+        }
+
         stage.setOnCloseRequest((event) -> {
             Books books = new Books();
             books.remove_book(current_book);
@@ -122,6 +147,10 @@ public class BookController extends MainController {
             current_book = null;
             instances = null;
             change_image = false;
+            book_instances_change = false;
+            current_book_stage = null;
+            window_books = null;
+            windows.remove("Book");
         });
 
         Tooltip tooltip = new Tooltip("Натисніть, аби змінити картинку)");
@@ -165,13 +194,33 @@ public class BookController extends MainController {
 
         instance_col_num.setCellValueFactory(new PropertyValueFactory<>("number"));
         instance_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+
         book_instances.setItems(instances);
-        book_instances.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 || book_instances.getSelectionModel().isEmpty()) {
+        if(root) {
+            book_instances.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !book_instances.getItems().isEmpty() && book_instances_change) {
+                    BookInstance currentInstance = book_instances.getSelectionModel().getSelectedItem();
+                    start_book_instance_window(current_book, currentInstance);
+                }
+            });
+        } 
+        else {
+            book_instances.setOnMouseClicked(event -> {
                 BookInstance currentInstance = book_instances.getSelectionModel().getSelectedItem();
-                start_book_instance_window(current_book, currentInstance);
-            }
-        });
+                if(event.getClickCount() == 2) {
+                    if(currentInstance.getStatus().equals("Доступний")) {
+                        User current_user = new Users().getCurrentUser();
+                        currentInstance.setStatus("Виданий читачу");
+                        currentInstance.setOwner(current_user.getId());
+                        TableView<BookInstance> table = (TableView<BookInstance>) book_name.getScene().lookup("#book_instances");
+                        table.refresh();
+                        start_window("book_reserved_success", "Книга видана");
+                    } else {
+                        start_window("book_reserved_fail", "Помилка при видачі книги");
+                    }
+                }
+            });
+        }
         try {
             InputStream image = new FileInputStream(book.getImage());
             book_image.setImage(new Image(image));
@@ -180,12 +229,26 @@ public class BookController extends MainController {
         }
     }
 
+    public void reserved_success_close() {
+        windows.remove("book_reserved_success");
+        Stage stage = (Stage) reserved_success_button.getScene().getWindow();
+        stage.close();
+    }
+
+    public void reserved_fail_close() {
+        windows.remove("book_reserved_fail");
+        Stage stage = (Stage) reserved_fail_button.getScene().getWindow();
+        stage.close();
+    }
+
     public void create_new_instance() {
         start_book_instance_window(current_book, null);
     }
 
-    public void start_book_instance_window(Book book, BookInstance book_instance) {
+    public boolean start_book_instance_window(Book book, BookInstance book_instance) {
         try {
+            String title = "Примірник";
+            if(is_opened("BookInstance")) return false;
             FXMLLoader loader = new FXMLLoader(getClass().getResource("BookInstance.fxml"));
             Parent root = loader.load();
 
@@ -193,10 +256,39 @@ public class BookController extends MainController {
 
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
-            controller.setData(book_instance, book, newStage);
+            newStage.setTitle(title);
+            controller.setData(book_instance, book, newStage, current_book_stage);
             newStage.show();
+            windows.add("BookInstance");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return true;
     }
+
+    public void book_delete() {
+        Books books = new Books();
+        books.remove_book(current_book);
+        Stage stage = (Stage) book_delete_button.getScene().getWindow();
+        stage.close();
+        current_book = null;
+        instances = null;
+        change_image = false;
+        book_instances_change = false;
+
+        TableView<Book> table = (TableView<Book>) window_books.getScene().lookup("#books_table");
+        table.refresh();
+        
+        start_window("book_deleted_success", "Видалення книги");
+    }
+
+    public void book_delete_success_close() {
+        windows.remove("book_deleted_success");
+        Stage stage = (Stage) book_delete_success_button.getScene().getWindow();
+        stage.close();
+    }
+
+    
+
 }

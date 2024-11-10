@@ -1,7 +1,15 @@
 com\e_library\MainController.class
 com\e_library\models\instances\User.class
+com\e_library\models\instances\Book.class
+com\e_library\Code.class
+com\e_library\BookInstanceController.class
 com\e_library\models\Objekts.class
+com\e_library\models\Generator.class
 com\e_library\Main.class
+com\e_library\BookController.class
+com\e_library\ChangeInfoController.class
+com\e_library\BooksController.class
+com\e_library\models\Books.class
 com\e_library\App.class
 com\e_library\models\instances\BookInstance.class
 com\e_library\models\Users.class
