@@ -29,8 +29,8 @@ public class Books extends Objekts<Book>{
         return books_list;
     }
 
-    public boolean is_valid_info(String name, String surname, String genre, LocalDate added, LocalDate created, String annootation) {
-        return !(name.isBlank() || surname.isBlank() || genre.isBlank() || (added == null) || (created == null) || annootation.isBlank());
+    public boolean is_valid_info(String name, String surname, String genre, LocalDate added, LocalDate created) {
+        return !(name.isBlank() || surname.isBlank() || genre.isBlank() || (added == null) || (created == null));
     }
 
     public void set_books_list(ObservableList<Book> books) {

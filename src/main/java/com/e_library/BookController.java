@@ -108,7 +108,7 @@ public class BookController extends MainController {
         LocalDate dateCreated = book_dateCreated.getValue();
         String annotation = book_annotation.getText();
 
-        if(!books.is_valid_info(name, surname, genre, dateAdded, dateCreated, annotation)) {
+        if(books.is_valid_info(name, surname, genre, dateAdded, dateCreated)) {
             current_book.setName(name);
             current_book.setAuthor(surname);
             current_book.setGenre(genre);
