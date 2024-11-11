@@ -21,7 +21,7 @@
          </columnResizePolicy>
       </TableView>
       <ImageView fx:id="books_user_img" fitHeight="45.0" fitWidth="45.0" layoutX="532.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="book_new_book_button" layoutX="274.0" layoutY="382.0" mnemonicParsing="false" onAction="#open_book" text="new book" />
+      <Button fx:id="book_new_book_button" layoutX="261.0" layoutY="380.0" mnemonicParsing="false" onAction="#open_book" text="Нова книга" />
       <TextField fx:id="books_search_field" layoutX="23.0" layoutY="23.0" prefHeight="26.0" prefWidth="502.0" />
    </children>
 </AnchorPane>

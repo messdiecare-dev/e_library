@@ -33,7 +33,7 @@ public class MainController {
     private DatePicker reg_datebirth;
 
     @FXML
-    private Button reg_button, reg_success_button, login_fail_button, login_success_button, book_create_success_button, reg_fail_button, book_changed_success_button;
+    private Button reg_button, reg_success_button, login_fail_button, login_success_button, book_create_success_button, reg_fail_button, book_changed_success_button, book_changed_fail_button;
 
     public void login() {
         Users usr = new Users();
@@ -97,6 +97,7 @@ public class MainController {
             newStage.setTitle(title);
             windows.add(window);
             newStage.setOnCloseRequest(e -> windows.remove(window));
+            newStage.setResizable(false);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -133,10 +134,6 @@ public class MainController {
         start_window("Books", "Список книг");
         System.out.println("end");
     }
-
-    public void open_book() {
-        start_window("Book", "Книга");
-    }
     
     public void book_create_success_close() {
         windows.remove("book_created_success");
@@ -147,6 +144,12 @@ public class MainController {
     public void book_changed_success_close() {
         windows.remove("book_changed_success");
         Stage stage = (Stage) book_changed_success_button.getScene().getWindow();
+        stage.close();
+    }
+
+    public void book_changed_fail_close() {
+        windows.remove("book_changed_fail");
+        Stage stage = (Stage) book_changed_fail_button.getScene().getWindow();
         stage.close();
     }
 

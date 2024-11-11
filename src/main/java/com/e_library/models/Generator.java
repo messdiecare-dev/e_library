@@ -11,7 +11,7 @@ public class Generator {
         Books bks = new Books();
         Faker faker = new Faker();
 
-        for(int i = 1; i <= 10; i++) {
+        for(int i = 1; i <= 100; i++) {
             bks.createNewObjekt(new Book(
                 faker.book().title(),
                 faker.book().author(),

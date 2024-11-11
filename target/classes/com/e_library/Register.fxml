@@ -43,7 +43,7 @@
       <TextField fx:id="reg_name" layoutX="89.0" layoutY="153.0" />
       <TextField fx:id="reg_surname" layoutX="332.0" layoutY="153.0" />
       <TextField fx:id="reg_login" layoutX="88.0" layoutY="220.0" />
-      <DatePicker fx:id="reg_datebirth" layoutX="319.0" layoutY="220.0" />
+      <DatePicker fx:id="reg_datebirth" editable="false" layoutX="319.0" layoutY="220.0" />
       <Label layoutX="66.0" layoutY="328.0" text="(має складатися з латинських літер. цифр та не містити спеціальних символів: &amp;, #, *)" textFill="#00000080" />
       <Button fx:id="reg_button" layoutX="246.0" layoutY="360.0" mnemonicParsing="false" onAction="#create_new_user" text="Зарєеструватися" />
       <PasswordField fx:id="reg_password" layoutX="225.0" layoutY="294.0" />

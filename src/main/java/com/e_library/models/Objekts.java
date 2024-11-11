@@ -57,7 +57,6 @@ abstract class Objekts<T> {
         
         URL fileUrl = Objekts.class.getResource(src);
         if(fileUrl != null) {
-            System.out.println("fileUrl is not null");
             try(OutputStream outputStream = new FileOutputStream(Paths.get(fileUrl.toURI()).toFile())) {
                 outputStream.write(gson.toJson(objekts).getBytes());
             } catch (IOException | URISyntaxException e) {

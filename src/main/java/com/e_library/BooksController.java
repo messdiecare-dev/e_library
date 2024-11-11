@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.e_library.models.Books;
@@ -57,7 +58,7 @@ public class BooksController extends MainController {
             if(is_opened("Book")) return false;
 
             if(book == null) {
-                book = new Book(" ", " ", " ", null, null, " ");
+                book = new Book(" ", " ", " ", new Date(), new Date(), " ");
             }
             FXMLLoader loader = new FXMLLoader(getClass().getResource(window + ".fxml"));
             Parent root = loader.load();
@@ -68,6 +69,7 @@ public class BooksController extends MainController {
             Stage current_stage = (Stage) books_table.getScene().getWindow();
             newStage.setScene(new Scene(root));
             newStage.setTitle(title);
+            newStage.setResizable(false);
             controller.setData(book, newStage, current_stage);
             windows.add("Book");
             newStage.show();
@@ -76,6 +78,10 @@ public class BooksController extends MainController {
         }
 
         return true;
+    }
+
+    public void open_book() {
+        start_book_window("Book", null);
     }
 
     private boolean start_change_user_info_window() {
@@ -93,6 +99,7 @@ public class BooksController extends MainController {
             newStage.setScene(new Scene(root));
             newStage.setTitle(title);
             controller.setData(user, newStage);
+            newStage.setResizable(false);
             windows.add("Change_user_info");
             newStage.show();
         } catch (IOException e) {
@@ -168,7 +175,7 @@ public class BooksController extends MainController {
         
         books_table.setItems(books);
         books_table.setOnMouseClicked(event -> {
-            if(event.getClickCount() == 2 || books_table.getSelectionModel().isEmpty()) {
+            if(event.getClickCount() == 2 && !books_table.getSelectionModel().isEmpty()) {
                 selectedBook = books_table.getSelectionModel().getSelectedItem();
                 start_book_window("Book", selectedBook);
             }

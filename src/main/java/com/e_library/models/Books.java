@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.e_library.models.instances.Book;
@@ -26,6 +27,10 @@ public class Books extends Objekts<Book>{
     public ObservableList<Book> get_books_list() {
         books_list = FXCollections.observableArrayList(getObjekts(src_books));
         return books_list;
+    }
+
+    public boolean is_valid_info(String name, String surname, String genre, LocalDate added, LocalDate created, String annootation) {
+        return !(name.isBlank() || surname.isBlank() || genre.isBlank() || (added == null) || (created == null) || annootation.isBlank());
     }
 
     public void set_books_list(ObservableList<Book> books) {

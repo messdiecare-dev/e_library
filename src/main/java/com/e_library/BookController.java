@@ -69,9 +69,7 @@ public class BookController extends MainController {
         book_name.setEditable(!book_name.isEditable());
         book_author.setEditable(!book_author.isEditable());
         book_genre.setEditable(!book_genre.isEditable());
-        book_dateAdding.setEditable(!book_dateAdding.isEditable());
         book_dateAdding.setDisable(!book_dateAdding.isDisabled());
-        book_dateCreated.setEditable(!book_dateCreated.isEditable());
         book_dateCreated.setDisable(!book_dateCreated.isDisabled());
         book_annotation.setEditable(!book_annotation.isEditable());
         book_create_button.setDisable(!book_create_button.isDisabled());
@@ -103,19 +101,30 @@ public class BookController extends MainController {
     public void save_book() {
         Books books = new Books();
         books.remove_book(current_book);
-        current_book.setName(book_name.getText());
-        current_book.setAuthor(book_author.getText());
-        current_book.setGenre(book_genre.getText());
-        current_book.setDateAdded(book_dateAdding.getValue());
-        current_book.setDateCreated(book_dateCreated.getValue());
-        current_book.setAnnotation(book_annotation.getText());
-        // current_book.setInstances(book_instances.getItems());
-        books.add_book_to_list(current_book);
-        TableView<Book> table = (TableView<Book>) window_books.getScene().lookup("#books_table");
-        table.refresh();
+        String name = book_name.getText();
+        String surname = book_author.getText();
+        String genre = book_genre.getText();
+        LocalDate dateAdded = book_dateAdding.getValue();
+        LocalDate dateCreated = book_dateCreated.getValue();
+        String annotation = book_annotation.getText();
 
-        start_window("book_changed_success", "Успішно змінили книгу");
-        System.out.println("Book saved succesfully!");
+        if(!books.is_valid_info(name, surname, genre, dateAdded, dateCreated, annotation)) {
+            current_book.setName(name);
+            current_book.setAuthor(surname);
+            current_book.setGenre(genre);
+            current_book.setDateAdded(dateAdded);
+            current_book.setDateCreated(dateCreated);
+            current_book.setAnnotation(annotation);
+            books.add_book_to_list(current_book);
+            TableView<Book> table = (TableView<Book>) window_books.getScene().lookup("#books_table");
+            table.refresh();
+    
+            start_window("book_changed_success", "Успішно змінили книгу");
+            System.out.println("Book saved succesfully!");
+        } else {
+            start_window("book_changed_fail", "Помилка під час збереження");
+        }
+
     }
 
     public void setData(Book book, Stage stage, Stage books_window) {
@@ -257,6 +266,7 @@ public class BookController extends MainController {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.setTitle(title);
+            newStage.setResizable(false);
             controller.setData(book_instance, book, newStage, current_book_stage);
             newStage.show();
             windows.add("BookInstance");
